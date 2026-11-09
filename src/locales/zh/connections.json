@@ -30,5 +30,21 @@
       "title": "列设置",
       "dragHandle": "拖拽控件"
     }
+  },
+  "statistics": {
+    "title": "域名统计",
+    "domain": "域名 / IP",
+    "connectionCount": "连接数",
+    "total": "总流量",
+    "rank": "排名",
+    "summary": "{{domains}} 个目标 · {{connections}} 个连接 · {{total}}",
+    "scope": "统计本页面可见期间记录的活跃连接及最近最多 {{limit}} 条已关闭连接；清空历史会移除对应统计，保留记录之外的流量不计入。无域名时显示目标 IP。",
+    "showRoutes": "查看 {{host}} 的代理链路",
+    "unknownDestination": "未知目标",
+    "unknownRoute": "未知链路",
+    "searchPlaceholder": "筛选域名或目标 IP",
+    "pagination": "第 {{from}}–{{to}} 项，共 {{count}} 个目标",
+    "previousPage": "上一页",
+    "nextPage": "下一页"
   }
 }

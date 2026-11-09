@@ -39,6 +39,7 @@
 <details>
 <summary><strong> ✨ 新增功能 </strong></summary>
 
+- 新增「域名统计」，支持按名称筛选流量排行并查看各代理链路用量
 
 </details>
 

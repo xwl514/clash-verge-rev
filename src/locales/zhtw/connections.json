@@ -30,5 +30,21 @@
       "title": "欄位設定",
       "dragHandle": "拖曳以移動"
     }
+  },
+  "statistics": {
+    "title": "網域統計",
+    "domain": "網域 / IP",
+    "connectionCount": "連線數",
+    "total": "總流量",
+    "rank": "排名",
+    "summary": "{{domains}} 個目標 · {{connections}} 個連線 · {{total}}",
+    "scope": "統計本頁面可見期間記錄的活躍連線及最近最多 {{limit}} 條已關閉連線；清空歷史會移除對應統計，保留記錄以外的流量不計入。無網域時顯示目標 IP。",
+    "showRoutes": "檢視 {{host}} 的代理鏈路",
+    "unknownDestination": "未知目標",
+    "unknownRoute": "未知鏈路",
+    "searchPlaceholder": "篩選網域或目標 IP",
+    "pagination": "第 {{from}}–{{to}} 項，共 {{count}} 個目標",
+    "previousPage": "上一頁",
+    "nextPage": "下一頁"
   }
 }

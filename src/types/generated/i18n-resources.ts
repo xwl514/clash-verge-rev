@@ -36,6 +36,22 @@ export interface TranslationResources {
       page: {
         title: string
       }
+      statistics: {
+        connectionCount: string
+        domain: string
+        nextPage: string
+        pagination: string
+        previousPage: string
+        rank: string
+        scope: string
+        searchPlaceholder: string
+        showRoutes: string
+        summary: string
+        title: string
+        total: string
+        unknownDestination: string
+        unknownRoute: string
+      }
     }
     home: {
       components: {

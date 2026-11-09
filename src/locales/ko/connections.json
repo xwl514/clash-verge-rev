@@ -30,5 +30,21 @@
       "title": "열",
       "dragHandle": "Drag handle"
     }
+  },
+  "statistics": {
+    "title": "Domain statistics",
+    "domain": "Domain / IP",
+    "connectionCount": "Connections",
+    "total": "Total traffic",
+    "rank": "Rank",
+    "summary": "{{domains}} destinations · {{connections}} connections · {{total}}",
+    "scope": "Active connections and up to {{limit}} recent closed connections observed while this page is visible. Clearing history removes it from these totals; traffic outside the retained records is not included. Missing domains are shown as destination IPs.",
+    "showRoutes": "Show proxy routes for {{host}}",
+    "unknownDestination": "Unknown destination",
+    "unknownRoute": "Unknown route",
+    "searchPlaceholder": "Filter domain or destination IP",
+    "pagination": "{{from}}–{{to}} of {{count}} destinations",
+    "previousPage": "Previous page",
+    "nextPage": "Next page"
   }
 }

@@ -36,6 +36,7 @@ import {
   useConnectionRowViews,
 } from '@/components/connection/connection-row-view'
 import { ConnectionTable } from '@/components/connection/connection-table'
+import { DomainTrafficTable } from '@/components/connection/domain-traffic-table'
 import { useConnectionData } from '@/hooks/use-connection-data'
 import { useConnectionSetting } from '@/hooks/use-connection-setting'
 import { usePageSearch } from '@/hooks/use-page-search'
@@ -86,9 +87,9 @@ const ConnectionsPage = () => {
   const { searchState, match, onSearch } = usePageSearch('connections')
   const hasSearch = searchState.text.length > 0
   const [curOrderOpt, setCurOrderOpt] = useState<OrderKey>('default')
-  const [connectionsType, setConnectionsType] = useState<'active' | 'closed'>(
-    'active',
-  )
+  const [connectionsType, setConnectionsType] = useState<
+    'active' | 'closed' | 'statistics'
+  >('active')
 
   const {
     response: { data: connections },
@@ -101,13 +102,16 @@ const ConnectionsPage = () => {
   const [setting, setSetting] = useConnectionSetting()
 
   const isTableLayout = setting.layout === 'table'
+  const isStatistics = connectionsType === 'statistics'
 
   const [isColumnManagerOpen, setIsColumnManagerOpen] = useState(false)
 
   const selectedConnections =
     connectionsType === 'active'
       ? (connections?.activeConnections ?? EMPTY_CONNECTIONS)
-      : (connections?.closedConnections ?? EMPTY_CONNECTIONS)
+      : connectionsType === 'closed'
+        ? (connections?.closedConnections ?? EMPTY_CONNECTIONS)
+        : EMPTY_CONNECTIONS
 
   const filterConn = useMemo(() => {
     const orderFunc = orderFunctionMap[curOrderOpt]
@@ -132,7 +136,7 @@ const ConnectionsPage = () => {
   const detailRef = useRef<ConnectionDetailRef>(null!)
 
   const selectConnectionsType = useCallback(
-    (type: 'active' | 'closed') => {
+    (type: 'active' | 'closed' | 'statistics') => {
       if (type === connectionsType) return
       detailRef.current?.close()
       setIsColumnManagerOpen(false)
@@ -186,6 +190,7 @@ const ConnectionsPage = () => {
             {t('shared.labels.uploaded')}: {parseTraffic(traffic?.upTotal || 0)}
           </Box>
           <IconButton
+            disabled={isStatistics}
             color="inherit"
             size="small"
             onClick={() =>
@@ -242,8 +247,16 @@ const ConnectionsPage = () => {
             {t('connections.components.actions.closed')}{' '}
             {connections?.closedConnections.length}
           </Button>
+          <Button
+            size="small"
+            variant={isStatistics ? 'contained' : 'outlined'}
+            onClick={() => selectConnectionsType('statistics')}
+            sx={{ whiteSpace: 'nowrap' }}
+          >
+            {t('connections.statistics.title')}
+          </Button>
         </ButtonGroup>
-        {!isTableLayout && (
+        {!isTableLayout && !isStatistics && (
           <BaseStyledSelect
             value={curOrderOpt}
             onChange={(e) => setCurOrderOpt(e.target.value as OrderKey)}
@@ -266,12 +279,17 @@ const ConnectionsPage = () => {
           }}
         >
           <BaseSearchBox
+            placeholder={
+              isStatistics
+                ? t('connections.statistics.searchPlaceholder')
+                : undefined
+            }
             defaultValue={searchState.text}
             {...searchState}
             onSearch={onSearch}
           />
         </Box>
-        {isTableLayout && hasTableData && (
+        {isTableLayout && !isStatistics && hasTableData && (
           <Tooltip title={t('connections.components.columnManager.title')}>
             <IconButton
               size="small"
@@ -285,7 +303,13 @@ const ConnectionsPage = () => {
         )}
       </Box>
 
-      {!hasTableData ? (
+      {isStatistics ? (
+        <DomainTrafficTable
+          active={connections?.activeConnections ?? EMPTY_CONNECTIONS}
+          closed={connections?.closedConnections ?? EMPTY_CONNECTIONS}
+          match={match}
+        />
+      ) : !hasTableData ? (
         <BaseEmpty />
       ) : isTableLayout ? (
         <ConnectionTable
