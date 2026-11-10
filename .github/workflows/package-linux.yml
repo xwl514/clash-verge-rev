@@ -42,6 +42,7 @@ jobs:
       - name: Update package index
         timeout-minutes: 5
         run: |
+          sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu|https://archive.ubuntu.com/ubuntu|g' /etc/apt/sources.list
           sudo apt-get -o Acquire::Retries=2 \
             -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 update
 
