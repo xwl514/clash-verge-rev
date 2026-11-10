@@ -39,10 +39,19 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v7
 
-      - name: Install native dependencies
+      - name: Update package index
+        timeout-minutes: 5
         run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends \
+          sudo apt-get -o Acquire::Retries=2 \
+            -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 update
+
+      - name: Install native dependencies
+        timeout-minutes: 15
+        run: |
+          sudo env DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a \
+            apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=30 \
+            -o Acquire::https::Timeout=30 -o Dpkg::Use-Pty=0 \
+            install -y --no-install-recommends \
             libwebkit2gtk-4.1-dev libayatana-appindicator3-dev \
             librsvg2-dev libxslt1.1 patchelf libssl-dev pkg-config rpm
 
