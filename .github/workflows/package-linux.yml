@@ -1,0 +1,120 @@
+name: Package Linux x64
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feat/domain-traffic-statistics
+    paths:
+      - .github/workflows/package-linux.yml
+      - src/**
+      - src-tauri/**
+      - crates/**
+      - scripts/**
+      - Cargo.toml
+      - Cargo.lock
+      - rust-toolchain.toml
+      - package.json
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+      - vite.config.mts
+
+permissions:
+  contents: read
+
+concurrency:
+  group: package-linux-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_INCREMENTAL: 0
+  RUST_BACKTRACE: short
+  HUSKY: 0
+
+jobs:
+  package:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 90
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v7
+
+      - name: Install native dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libwebkit2gtk-4.1-dev libayatana-appindicator3-dev \
+            librsvg2-dev libxslt1.1 patchelf libssl-dev pkg-config rpm
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: '1.99.1'
+          targets: x86_64-unknown-linux-gnu
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: '. -> target'
+          shared-key: linux-x64-installer
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          run_install: false
+
+      - name: Install Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: '26.13.0'
+          cache: pnpm
+
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Prepare bundled cores and service
+        run: pnpm run prebuild x86_64-unknown-linux-gnu
+
+      - name: Verify traffic history persistence
+        run: cargo test -p clash-verge-traffic --locked
+
+      - name: Identify the custom build
+        run: |
+          base_version=$(node -p "require('./package.json').version.split('+')[0]")
+          pnpm release-version "${base_version}+domainstats.${GITHUB_SHA:0:8}"
+
+      - name: Build Linux packages
+        env:
+          NODE_OPTIONS: '--max-old-space-size=4096'
+        run: |
+          config_path="$RUNNER_TEMP/package-linux.json"
+          printf '%s\n' '{"bundle":{"createUpdaterArtifacts":false}}' > "$config_path"
+          pnpm exec tauri build --target x86_64-unknown-linux-gnu \
+            --bundles deb,rpm --config "$config_path" -- --locked
+
+      - name: Verify packages and generate checksums
+        run: |
+          shopt -s nullglob
+          debs=(target/x86_64-unknown-linux-gnu/release/bundle/deb/*.deb)
+          rpms=(target/x86_64-unknown-linux-gnu/release/bundle/rpm/*.rpm)
+          test "${#debs[@]}" -eq 1
+          test "${#rpms[@]}" -eq 1
+          test "$(dpkg-deb -f "${debs[0]}" Architecture)" = amd64
+          test "$(rpm -qp --queryformat '%{ARCH}' "${rpms[0]}")" = x86_64
+          dpkg-deb --info "${debs[0]}"
+          rpm -qp --info "${rpms[0]}"
+          mkdir -p artifacts
+          cp "${debs[0]}" "${rpms[0]}" artifacts/
+          cd artifacts
+          sha256sum -- *.deb *.rpm > SHA256SUMS.txt
+          printf 'Source commit: %s\n' "$GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+          cat SHA256SUMS.txt >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload Linux packages
+        uses: actions/upload-artifact@v7
+        with:
+          name: Clash-Verge-traffic-history-linux-x64
+          path: artifacts/*
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 0
