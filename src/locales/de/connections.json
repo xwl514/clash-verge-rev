@@ -32,19 +32,40 @@
     }
   },
   "statistics": {
-    "title": "Domain statistics",
+    "title": "Traffic statistics",
     "domain": "Domain / IP",
-    "connectionCount": "Connections",
     "total": "Total traffic",
     "rank": "Rank",
-    "summary": "{{domains}} destinations · {{connections}} connections · {{total}}",
-    "scope": "Active connections and up to {{limit}} recent closed connections observed while this page is visible. Clearing history removes it from these totals; traffic outside the retained records is not included. Missing domains are shown as destination IPs.",
+    "scope": "Saved locally for 30 days, with one-minute precision. Recording continues while the app runs in the tray. Traffic during app shutdown, core disconnection or between samples cannot be recovered. Missing domains are shown as destination IPs.",
     "showRoutes": "Show proxy routes for {{host}}",
     "unknownDestination": "Unknown destination",
     "unknownRoute": "Unknown route",
     "searchPlaceholder": "Filter domain or destination IP",
     "pagination": "{{from}}–{{to}} of {{count}} destinations",
     "previousPage": "Previous page",
-    "nextPage": "Next page"
+    "nextPage": "Next page",
+    "firstSeen": "First recorded traffic",
+    "lastSeen": "Last recorded traffic",
+    "timeline": "Traffic over time",
+    "timeDetails": "Traffic by time interval",
+    "timeRange": "Time range",
+    "periods": {
+      "hour": "Last hour",
+      "today": "Today",
+      "week": "Last 7 days",
+      "month": "Last 30 days",
+      "custom": "Custom"
+    },
+    "from": "From",
+    "to": "To (exclusive)",
+    "invalidRange": "Choose a range of at least one minute within the last 30 days. The end time is exclusive.",
+    "loadError": "Could not load traffic history. Retrying automatically.",
+    "status": {
+      "recording": "Recording",
+      "waiting": "Waiting for core",
+      "storageError": "Storage error — recording interrupted"
+    },
+    "lastSample": "Last sample",
+    "destinations": "Destinations"
   }
 }

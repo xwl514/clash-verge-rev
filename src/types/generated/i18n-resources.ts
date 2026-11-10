@@ -37,17 +37,38 @@ export interface TranslationResources {
         title: string
       }
       statistics: {
-        connectionCount: string
+        destinations: string
         domain: string
+        firstSeen: string
+        from: string
+        invalidRange: string
+        lastSample: string
+        lastSeen: string
+        loadError: string
         nextPage: string
         pagination: string
+        periods: {
+          custom: string
+          hour: string
+          month: string
+          today: string
+          week: string
+        }
         previousPage: string
         rank: string
         scope: string
         searchPlaceholder: string
         showRoutes: string
-        summary: string
+        status: {
+          recording: string
+          storageError: string
+          waiting: string
+        }
+        timeDetails: string
+        timeline: string
+        timeRange: string
         title: string
+        to: string
         total: string
         unknownDestination: string
         unknownRoute: string
@@ -228,6 +249,7 @@ export interface TranslationResources {
             proxies: string
             rules: string
             settings: string
+            trafficStatistics: string
             unlock: string
           }
         }

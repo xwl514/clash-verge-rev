@@ -80,6 +80,8 @@ async fn resolve_setup() {
         init_core_manager().await;
     });
 
+    crate::core::traffic_history::start();
+
     let _ = futures::join!(
         core_init,
         init_tray(),

@@ -32,19 +32,40 @@
     }
   },
   "statistics": {
-    "title": "域名统计",
+    "title": "流量统计",
     "domain": "域名 / IP",
-    "connectionCount": "连接数",
     "total": "总流量",
     "rank": "排名",
-    "summary": "{{domains}} 个目标 · {{connections}} 个连接 · {{total}}",
-    "scope": "统计本页面可见期间记录的活跃连接及最近最多 {{limit}} 条已关闭连接；清空历史会移除对应统计，保留记录之外的流量不计入。无域名时显示目标 IP。",
-    "showRoutes": "查看 {{host}} 的代理链路",
+    "scope": "统计按分钟保存在本机，保留最近30天。程序驻留托盘时仍会记录；退出程序、内核断连期间或采样间隔内未捕获的流量无法补记。缺少域名时显示目标 IP。",
+    "showRoutes": "查看 {{host}} 的代理出口",
     "unknownDestination": "未知目标",
-    "unknownRoute": "未知链路",
+    "unknownRoute": "未知出口",
     "searchPlaceholder": "筛选域名或目标 IP",
     "pagination": "第 {{from}}–{{to}} 项，共 {{count}} 个目标",
     "previousPage": "上一页",
-    "nextPage": "下一页"
+    "nextPage": "下一页",
+    "firstSeen": "首次记录流量",
+    "lastSeen": "最近记录流量",
+    "timeline": "流量趋势",
+    "timeDetails": "查看分时段明细",
+    "timeRange": "时间范围",
+    "periods": {
+      "hour": "最近一小时",
+      "today": "今天",
+      "week": "近7天",
+      "month": "近30天",
+      "custom": "自定义"
+    },
+    "from": "开始时间",
+    "to": "结束时间（不含）",
+    "invalidRange": "请选择最近30天内、至少一分钟的时间范围，不包含结束时间。",
+    "loadError": "读取流量记录失败，正在自动重试。",
+    "status": {
+      "recording": "正在记录",
+      "waiting": "等待内核连接",
+      "storageError": "存储异常，记录已中断"
+    },
+    "lastSample": "最近采样",
+    "destinations": "访问目标数"
   }
 }

@@ -37,6 +37,7 @@ clash-verge-media-unlock = { workspace = true }
 clash-verge-logging = { workspace = true }
 clash-verge-i18n = { workspace = true }
 clash-verge-limiter = { workspace = true }
+clash-verge-traffic = { workspace = true }
 tauri-plugin-clash-verge-sysinfo = { workspace = true }
 tauri-plugin-clipboard-manager = { workspace = true }
 tauri = { workspace = true, features = [

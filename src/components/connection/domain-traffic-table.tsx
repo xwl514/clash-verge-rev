@@ -19,9 +19,8 @@ import { Fragment, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BaseEmpty } from '@/components/base'
-import { MAX_CLOSED_CONNS_NUM } from '@/hooks/use-connection-data'
 import {
-  aggregateDomainTraffic,
+  type DomainTraffic,
   sortDomainTraffic,
   type DomainTrafficSortKey,
 } from '@/utils/connection-statistics'
@@ -34,54 +33,32 @@ import {
 const PAGE_SIZE = 25
 const COLUMNS = [
   { key: 'host', label: 'connections.statistics.domain' },
-  { key: 'connections', label: 'connections.statistics.connectionCount' },
   { key: 'upload', label: 'shared.labels.uploaded' },
   { key: 'download', label: 'shared.labels.downloaded' },
   { key: 'total', label: 'connections.statistics.total' },
+  { key: 'lastSeen', label: 'connections.statistics.lastSeen' },
 ] as const
 
 interface Props {
-  active: IConnectionsItem[]
-  closed: IConnectionsItem[]
-  match: (host: string) => boolean
+  domains: DomainTraffic[]
+  rangeKey: string
 }
 
-export const DomainTrafficTable = ({ active, closed, match }: Props) => {
+export const DomainTrafficTable = ({ domains, rangeKey }: Props) => {
   const { t } = useTranslation()
   const [sorting, setSorting] = useState<{
     key: DomainTrafficSortKey
     direction: 'asc' | 'desc'
   }>({ key: 'total', direction: 'desc' })
-  const [pagination, setPagination] = useState({ page: 0, match, sorting })
+  const [pagination, setPagination] = useState({ page: 0, rangeKey, sorting })
   const [expandedHost, setExpandedHost] = useState<string | null>(null)
 
-  const domains = useMemo(
-    () => aggregateDomainTraffic(active, closed),
-    [active, closed],
-  )
   const rows = useMemo(
-    () =>
-      sortDomainTraffic(
-        domains.filter((item) => match(item.host)),
-        sorting.key,
-        sorting.direction,
-      ),
-    [domains, match, sorting],
-  )
-  const totals = useMemo(
-    () =>
-      rows.reduce(
-        (sum, row) => ({
-          upload: sum.upload + row.upload,
-          download: sum.download + row.download,
-          connections: sum.connections + row.connections,
-        }),
-        { upload: 0, download: 0, connections: 0 },
-      ),
-    [rows],
+    () => sortDomainTraffic(domains, sorting.key, sorting.direction),
+    [domains, sorting],
   )
   const currentPage = Math.min(
-    pagination.match === match && pagination.sorting === sorting
+    pagination.rangeKey === rangeKey && pagination.sorting === sorting
       ? pagination.page
       : 0,
     Math.max(0, Math.ceil(rows.length / PAGE_SIZE) - 1),
@@ -101,32 +78,12 @@ export const DomainTrafficTable = ({ active, closed, match }: Props) => {
     }))
 
   return (
-    <Box
-      sx={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}
-    >
-      <Box sx={{ px: 2, py: 1 }}>
-        <Typography variant="body2">
-          {t('connections.statistics.summary', {
-            domains: rows.length,
-            connections: totals.connections,
-            total: formatConnectionTraffic(totals.upload + totals.download),
-          })}
-          {' · '}
-          {t('shared.labels.uploaded')}:{' '}
-          {formatConnectionTraffic(totals.upload)}
-          {' · '}
-          {t('shared.labels.downloaded')}:{' '}
-          {formatConnectionTraffic(totals.download)}
-        </Typography>
-        <Typography variant="caption" color="text.secondary">
-          {t('connections.statistics.scope', { limit: MAX_CLOSED_CONNS_NUM })}
-        </Typography>
-      </Box>
+    <Box>
       {rows.length === 0 ? (
         <BaseEmpty />
       ) : (
         <>
-          <TableContainer sx={{ flex: 1, minHeight: 0 }}>
+          <TableContainer>
             <Table
               stickyHeader
               size="small"
@@ -209,7 +166,6 @@ export const DomainTrafficTable = ({ active, closed, match }: Props) => {
                                 ` (+${row.routes.length - 1})`}
                             </Typography>
                           </TableCell>
-                          <TableCell align="right">{row.connections}</TableCell>
                           <TableCell
                             align="right"
                             sx={{ whiteSpace: 'nowrap' }}
@@ -227,6 +183,12 @@ export const DomainTrafficTable = ({ active, closed, match }: Props) => {
                             sx={{ whiteSpace: 'nowrap', fontWeight: 600 }}
                           >
                             {formatConnectionTraffic(row.total)}
+                          </TableCell>
+                          <TableCell
+                            align="right"
+                            sx={{ whiteSpace: 'nowrap' }}
+                          >
+                            {new Date(row.lastSeen).toLocaleString()}
                           </TableCell>
                         </TableRow>
                         {expanded && (
@@ -250,9 +212,7 @@ export const DomainTrafficTable = ({ active, closed, match }: Props) => {
                                       )}
                                     </TableCell>
                                     <TableCell align="right">
-                                      {t(
-                                        'connections.statistics.connectionCount',
-                                      )}
+                                      {t('connections.statistics.firstSeen')}
                                     </TableCell>
                                     <TableCell align="right">
                                       {t('shared.labels.uploaded')}
@@ -280,7 +240,9 @@ export const DomainTrafficTable = ({ active, closed, match }: Props) => {
                                           )}
                                       </TableCell>
                                       <TableCell align="right">
-                                        {route.connections}
+                                        {new Date(
+                                          route.firstSeen,
+                                        ).toLocaleString()}
                                       </TableCell>
                                       <TableCell
                                         align="right"
@@ -322,7 +284,7 @@ export const DomainTrafficTable = ({ active, closed, match }: Props) => {
             rowsPerPage={PAGE_SIZE}
             rowsPerPageOptions={[PAGE_SIZE]}
             onPageChange={(_event, page) =>
-              setPagination({ page, match, sorting })
+              setPagination({ page, rangeKey, sorting })
             }
             labelDisplayedRows={({ from, to, count }) =>
               t('connections.statistics.pagination', { from, to, count })

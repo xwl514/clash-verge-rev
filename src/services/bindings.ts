@@ -39,6 +39,11 @@ export const commands = {
   /**  Returns one coherent core/service snapshot instead of independently refreshed state. */
   getRuntimeState: () =>
     __TAURI_INVOKE<RunStateView_Serialize>('get_runtime_state'),
+  getTrafficHistory: (from: number, to: number) =>
+    __TAURI_INVOKE<TrafficHistoryView_Serialize>('get_traffic_history', {
+      from,
+      to,
+    }),
   getPendingFailures: () =>
     __TAURI_INVOKE<PendingFailure[]>('get_pending_failures'),
   getSidecarFailure: () =>
@@ -1079,6 +1084,48 @@ export type ToggleableProxyPort = {
   enabled: boolean
   port: number
 }
+
+export type TrafficHistory = {
+  from: number
+  to: number
+  intervalMs: number
+  records: TrafficRecord[]
+  points: TrafficPoint[]
+}
+
+export type TrafficHistoryView =
+  | TrafficHistoryView_Serialize
+  | TrafficHistoryView_Deserialize
+
+export type TrafficHistoryView_Deserialize = {
+  history: TrafficHistory
+  status: TrafficStatus
+  lastSample?: number | null
+}
+
+export type TrafficHistoryView_Serialize = {
+  history: TrafficHistory
+  status: TrafficStatus
+  lastSample: number | null
+}
+
+export type TrafficPoint = {
+  timestamp: number
+  host: string
+  upload: number
+  download: number
+}
+
+export type TrafficRecord = {
+  host: string
+  chains: string[]
+  upload: number
+  download: number
+  firstSeen: number
+  lastSeen: number
+}
+
+export type TrafficStatus = 'recording' | 'waiting' | 'storageError'
 
 export type UnlockItem = UnlockItem_Serialize | UnlockItem_Deserialize
 

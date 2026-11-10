@@ -32,19 +32,40 @@
     }
   },
   "statistics": {
-    "title": "網域統計",
+    "title": "流量統計",
     "domain": "網域 / IP",
-    "connectionCount": "連線數",
     "total": "總流量",
     "rank": "排名",
-    "summary": "{{domains}} 個目標 · {{connections}} 個連線 · {{total}}",
-    "scope": "統計本頁面可見期間記錄的活躍連線及最近最多 {{limit}} 條已關閉連線；清空歷史會移除對應統計，保留記錄以外的流量不計入。無網域時顯示目標 IP。",
-    "showRoutes": "檢視 {{host}} 的代理鏈路",
+    "scope": "統計按分鐘儲存在本機，保留最近30天。程式常駐系統匣時仍會記錄；結束程式、核心斷線期間或取樣間隔內未捕獲的流量無法補記。缺少網域時顯示目標 IP。",
+    "showRoutes": "檢視 {{host}} 的代理出口",
     "unknownDestination": "未知目標",
-    "unknownRoute": "未知鏈路",
+    "unknownRoute": "未知出口",
     "searchPlaceholder": "篩選網域或目標 IP",
     "pagination": "第 {{from}}–{{to}} 項，共 {{count}} 個目標",
-    "previousPage": "上一頁",
-    "nextPage": "下一頁"
+    "previousPage": "上一页",
+    "nextPage": "下一页",
+    "firstSeen": "首次記錄流量",
+    "lastSeen": "最近記錄流量",
+    "timeline": "流量趨勢",
+    "timeDetails": "檢視分時段明細",
+    "timeRange": "時間範圍",
+    "periods": {
+      "hour": "最近一小時",
+      "today": "今天",
+      "week": "近7天",
+      "month": "近30天",
+      "custom": "自訂"
+    },
+    "from": "開始時間",
+    "to": "結束時間（不含）",
+    "invalidRange": "請選擇最近30天內、至少一分鐘的時間範圍，不包含結束時間。",
+    "loadError": "讀取流量記錄失敗，正在自動重試。",
+    "status": {
+      "recording": "正在記錄",
+      "waiting": "等待核心連線",
+      "storageError": "儲存異常，記錄已中斷"
+    },
+    "lastSample": "最近取樣",
+    "destinations": "存取目標數"
   }
 }

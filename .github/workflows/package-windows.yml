@@ -68,6 +68,9 @@ jobs:
       - name: Prepare bundled cores and service
         run: pnpm run prebuild x86_64-pc-windows-msvc
 
+      - name: Verify traffic history persistence
+        run: cargo test -p clash-verge-traffic --locked
+
       - name: Identify the custom build
         shell: pwsh
         run: |

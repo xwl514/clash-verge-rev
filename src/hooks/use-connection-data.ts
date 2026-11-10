@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useSyncExternalStore } from 'react'
 import { MihomoWebSocket } from 'tauri-plugin-mihomo-api'
 
-export const MAX_CLOSED_CONNS_NUM = 500
+const MAX_CLOSED_CONNS_NUM = 500
 const CONNECTION_UPDATE_THROTTLE_MS = 500
 const CONNECTION_RECONNECT_DELAY_MS = 1_000
 

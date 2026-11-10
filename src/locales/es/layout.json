@@ -9,7 +9,8 @@
         "rules": "Normas",
         "logs": "Registros",
         "unlock": "Descubrir",
-        "settings": "Ajustes"
+        "settings": "Ajustes",
+        "trafficStatistics": "Traffic statistics"
       },
       "menu": {
         "reorderMode": "Menu reorder mode",

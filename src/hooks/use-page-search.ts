@@ -10,8 +10,12 @@ const initialSearch: SearchState = {
   useRegularExpression: false,
 }
 
-const searches: Record<'connections' | 'rules' | 'logs', SearchState> = {
+const searches: Record<
+  'connections' | 'rules' | 'logs' | 'traffic-statistics',
+  SearchState
+> = {
   connections: initialSearch,
+  'traffic-statistics': initialSearch,
   rules: initialSearch,
   logs: initialSearch,
 }
